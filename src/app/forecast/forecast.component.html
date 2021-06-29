@@ -1,0 +1,23 @@
+
+<h4>Template for 5-day forecast page:</h4>
+
+<div class="container-fluid">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">5-day forecast for {{ cityName$ | async }}</h3>
+    </div>
+
+    <ul class="list-group">
+      <li class="list-group-item" *ngFor="let forecast of forecasts$ | async | keyvalue">
+        {{ forecast.key | date:'EEEE, MMM, d' }}:
+        {{ forecast.value?.condition }}
+        - Min: {{ forecast.value?.temperature.min | number:'1.0-0' }}
+        - Max: {{ forecast.value?.temperature.max | number:'1.0-0' }}
+
+        <img class="icon" *ngIf="forecast.value?.weather" [src]="'https://www.angulartraining.com/images/weather/' + forecast.value?.weather + '.png'">
+      </li>
+    </ul>
+  </div>
+  
+  <button class="btn btn-success" tabindex="0" id="mainPageBtn" (click)="nagivateBack()">&lt; Back to main page</button>
+</div>
