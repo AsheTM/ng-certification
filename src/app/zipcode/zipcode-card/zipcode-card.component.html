@@ -1,0 +1,21 @@
+
+<div class="well flex">
+    <div>
+        <h3>{{ name }} ({{ zipcode }})</h3>
+        <h4>Current conditions: {{ condition | sharedCapitalCase }}</h4>
+        <h4>Temperatures today:</h4>
+        <p>
+            Current {{ temperature.current }}
+            - Max {{ temperature.max }}
+            - Min {{ temperature.min }}
+        </p>
+        <p>
+            <a [routerLink]="['/forecast', zipcode]">Show 5-day forecast for {{ name }}</a>
+        </p>
+    </div>
+    
+    <div>
+        <span class="close" (click)="onClickEventHandler()">×</span>
+        <img *ngIf="icon" [src]="icon" />
+    </div>
+</div>
