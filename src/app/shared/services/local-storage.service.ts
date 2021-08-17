@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 import { SharedModule } from '../shared.module';
-import { SHARED_TOKEN_VALUE_STORAGE } from '../shared.provider';
+import { SHARED_TOKEN_VALUE_STORAGE } from '../shared.token';
 import { TSharedModuleConfigurationStorage } from '../shared.type';
 
 
@@ -17,7 +17,10 @@ export class LocalStorageService {
   private _itemsSubject:  BehaviorSubject<string[]> = new BehaviorSubject<string[]>(this._getItems());
   itemsSubject$:          Observable<string[]>      = this._itemsSubject.asObservable();
 
-  constructor(@Inject(SHARED_TOKEN_VALUE_STORAGE) private sharedConfigurationStorage: TSharedModuleConfigurationStorage) { }
+  constructor(
+    @Inject(SHARED_TOKEN_VALUE_STORAGE) 
+      private sharedConfigurationStorage: TSharedModuleConfigurationStorage
+  ) { }
 
   setItem(item: string): void {
     const items:              string[]  = this._getItems();

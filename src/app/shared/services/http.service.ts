@@ -1,11 +1,19 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, Optional, Self } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { SharedModule } from '../shared.module';
-import { SHARED_TOKEN_VALUE_FALLBACK, SHARED_TOKEN_VALUE_HTTP, SHARED_TOKEN_VALUE_INTERCEPTOR } from '../shared.provider';
-import { TSharedModuleConfigurationFallback, TSharedModuleConfigurationHttp, TSharedModuleConfigurationInterceptor } from '../shared.type';
+import {
+  SHARED_TOKEN_VALUE_FALLBACK, 
+  SHARED_TOKEN_VALUE_HTTP, 
+  SHARED_TOKEN_VALUE_INTERCEPTOR
+} from '../shared.token';
+import {
+  TSharedModuleConfigurationFallback, 
+  TSharedModuleConfigurationHttp, 
+  TSharedModuleConfigurationInterceptor
+} from '../shared.type';
 
 import { EHttpErrorCode } from '../enum';
 import { THttpError } from '../type';

@@ -1,15 +1,18 @@
-import { ModuleWithProviders, NgModule } from '@angular/core';
+import { Inject, ModuleWithProviders, NgModule, Optional, Self, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
-import { TSharedModuleConfiguration } from './shared.type';
+import { ESharedProvider } from './shared.enum';
 import {
   SHARED_TOKEN_VALUE_HTTP, 
   SHARED_TOKEN_VALUE_FALLBACK, 
   SHARED_TOKEN_VALUE_STORAGE,
-  SHARED_TOKEN_VALUE_INTERCEPTOR
-} from './shared.provider';
+  SHARED_TOKEN_VALUE_INTERCEPTOR,
+  SHARED_PROVIDER_FOR_ROOT,
+  SHARED_PROVIDER_FOR_FEATURE
+} from './shared.token';
+import { TSharedModuleConfiguration } from './shared.type';
 
 import { CapitalCasePipe } from './pipes';
 import { CacheInterceptor } from './interceptors';

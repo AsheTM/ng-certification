@@ -9,9 +9,10 @@ import {
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
-import { TCache } from '../type';
-import { SHARED_TOKEN_VALUE_INTERCEPTOR } from '../shared.provider';
+import { SHARED_TOKEN_VALUE_INTERCEPTOR } from '../shared.token';
 import { TSharedModuleConfigurationInterceptor } from '../shared.type';
+
+import { TCache } from '../type';
 
 
 @Injectable()
@@ -22,7 +23,10 @@ export class CacheInterceptor implements HttpInterceptor {
 
   private readonly PARAM:     string    = this._sharedModuleConfigurationInterceptor.param;
 
-  constructor(@Inject(SHARED_TOKEN_VALUE_INTERCEPTOR) private _sharedModuleConfigurationInterceptor: TSharedModuleConfigurationInterceptor) { }
+  constructor(
+    @Inject(SHARED_TOKEN_VALUE_INTERCEPTOR) 
+      private _sharedModuleConfigurationInterceptor: TSharedModuleConfigurationInterceptor
+  ) { }
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const { method, params }: HttpRequest<unknown>  = request;
@@ -38,6 +42,7 @@ export class CacheInterceptor implements HttpInterceptor {
         if(event instanceof HttpResponse) {
           this.CACHE[param] = event;
         }
-      }))
+      }));
   }
+
 }

@@ -1,6 +1,6 @@
 
 export * from './shared.module';
-export * from './shared.provider';
+export * from './shared.token';
 export * from './shared.type';
 
 export * from './enum';
