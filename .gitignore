@@ -4,3 +4,6 @@
 /out-tsc
 
 /node_modules
+
+# Custom
+*.git-credentials
