@@ -7,9 +7,10 @@ export type TSharedModuleConfiguration              = {
 };
 
 export type TSharedModuleConfigurationHttp          = {
-    url:    string;
-    param:  string;
-    apiKey: string;
+    url:        string;
+    param:      string;
+    apiKey:     string;
+    interval?:  number;
 };
 
 export type TSharedModuleConfigurationFallback      = {

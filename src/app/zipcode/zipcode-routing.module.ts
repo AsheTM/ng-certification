@@ -7,8 +7,8 @@ import { ZIPCODE_ROUTE_ROOT } from './zipcode.route';
 
 const routes: Routes = [
   {
-    path: ZIPCODE_ROUTE_ROOT, 
-    component: ZipcodeComponent
+    path:       ZIPCODE_ROUTE_ROOT, 
+    component:  ZipcodeComponent
   }
 ];
 

@@ -10,7 +10,7 @@ import {
     APP_ROUTE_WILDCARD
 } from './app.route';
 
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments';
 
 
 const routes: Route[] = [

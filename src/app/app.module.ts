@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { CoreModule } from './core';
 import { SharedModule } from './shared';
 
-import { environment } from 'src/environments/environment';
+import { environment } from 'src/environments';
 
 
 @NgModule({
@@ -17,14 +17,7 @@ import { environment } from 'src/environments/environment';
     AppRoutingModule, 
 
     CoreModule.forRoot(environment.configuration.core), 
-    SharedModule.forRoot({
-      ...environment.configuration.shared, 
-      http:         {
-        apiKey: environment.configuration.shared.http.apiKey,
-        param:  environment.configuration.shared.http.param,
-        url:    environment.configuration.shared.http.urls.weather
-      }
-    })
+    SharedModule.forRoot(environment.configuration.shared.root)
   ],
   declarations: [AppComponent],
   bootstrap:    [AppComponent]

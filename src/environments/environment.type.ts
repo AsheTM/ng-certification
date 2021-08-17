@@ -5,6 +5,7 @@ import {
   TSharedModuleConfigurationStorage,
   TSharedModuleConfigurationInterceptor
 } from 'src/app/shared';
+import { EEnvironmentFeature } from './environment.enum';
 
 
 export type EnvironmentType                           = {
@@ -14,20 +15,27 @@ export type EnvironmentType                           = {
 
 export type EnvironmentConfigurationType              = {
   shared:   EnvironmentConfigurationShared;
-  core:     CoreModuleConfigurationType;
+  core:     EnvironmentConfigurationCore;
 };
 
 export type EnvironmentConfigurationCore              = CoreModuleConfigurationType;
 
-export type EnvironmentConfigurationSharedFallback    = Record<'fallback', Partial<Omit<TSharedModuleConfigurationFallback, 'url'> & Record<'urls', any>>>;
+export type EnvironmentConfigurationShared            = {
+  root:     EnvironmentConfigurationSharedRoot;
+  feature:  EnvironmentConfigurationSharedFeatures;
+};
 
-export type EnvironmentConfigurationSharedHttp        = Record<'http', Partial<Omit<TSharedModuleConfigurationHttp, 'url'> & Record<'urls', any>>>;
+export type EnvironmentConfigurationSharedRoot        = EnvironmentConfigurationSharedStorage 
+  & EnvironmentConfigurationSharedInterceptor;
+
+export type EnvironmentConfigurationSharedFeatures    = Record<EEnvironmentFeature, EnvironmentConfigurationSharedFeature>;
+
+export type EnvironmentConfigurationSharedFeature     = EnvironmentConfigurationSharedHttp & EnvironmentConfigurationSharedFallback;
+
+export type EnvironmentConfigurationSharedFallback    = Record<'fallback', TSharedModuleConfigurationFallback>;
+
+export type EnvironmentConfigurationSharedHttp        = Record<'http', TSharedModuleConfigurationHttp>;
 
 export type EnvironmentConfigurationSharedInterceptor = Record<'interceptor', TSharedModuleConfigurationInterceptor>;
 
 export type EnvironmentConfigurationSharedStorage     = Record<'storage', TSharedModuleConfigurationStorage>;
-
-export type EnvironmentConfigurationShared            = EnvironmentConfigurationSharedStorage 
-  & EnvironmentConfigurationSharedInterceptor 
-  & EnvironmentConfigurationSharedHttp 
-  & EnvironmentConfigurationSharedFallback;
