@@ -16,7 +16,7 @@ export class ZipcodeComponent {
 
   @ViewChild('Zipcode') zipcodeInputRef: ElementRef<HTMLInputElement>;
   
-  weathers$: Observable<TWeather[]> = this._zipcodeService.zipcodes$;
+  weathers$: Observable<TWeather[]> = this._zipcodeService.weathersZipcode$;
 
   constructor(private _zipcodeService: ZipcodeService) { }
 

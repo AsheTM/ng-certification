@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { EMPTY, from, Observable } from 'rxjs';
-import { catchError, concatMap, map, switchMap, toArray } from 'rxjs/operators';
+import { catchError, concatMap, map, switchMap, switchMapTo, toArray } from 'rxjs/operators';
 
 import { TWeather } from './zipcode.type';
 
 import {
-  EHttpErrorCode,
-  getWeatherIcon,
+  EHttpErrorCode, 
+  getWeatherIcon, 
   HttpService, 
-  LocalStorageService,
+  IntervalService, 
+  LocalStorageService, 
   THttpError
 } from '../shared';
 
@@ -16,12 +17,17 @@ import {
 @Injectable()
 export class ZipcodeService {
   
-  zipcodes$: Observable<TWeather[]> = this._localStorageService.itemsSubject$
-    .pipe(switchMap((zipcodes: string[]) => this._getWeathers(zipcodes)));
+  private _zipcodesZipcode$:  Observable<string[]>    = this._localStorageService.itemsSubject$;
+  weathersZipcode$:           Observable<TWeather[]>  = this._intervalService.interval$
+    .pipe(
+      switchMapTo(this._zipcodesZipcode$), 
+      switchMap((zipcodes: string[]) => this._getWeathers(zipcodes))
+    );
 
   constructor(
+    private _intervalService:     IntervalService, 
     private _localStorageService: LocalStorageService, 
-    private _httpService: HttpService
+    private _httpService:         HttpService
   ) { }
 
   getZipcode(zipcode: string): void {
@@ -46,7 +52,7 @@ export class ZipcodeService {
   private _getWeather(zipcode: string): Observable<TWeather> {
     return this._httpService.getData<TWeather>(zipcode)
       .pipe(
-        map((weather: any) => this._transformToWeatherObject(zipcode, weather)), 
+        map((weather: unknown) => this._transformToWeatherObject(zipcode, weather)), 
         catchError((err: any | THttpError) => {
           switch(err.code) {
             case EHttpErrorCode.NO_FALLBACK_PROVIDED: 
