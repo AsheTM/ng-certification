@@ -1,7 +1,7 @@
-import { TTemperature, TZipcode } from "../shared";
+import { TTemperature, MZipcode } from "../shared";
 
 
-export type TForecast = Pick<TZipcode, 'condition' | 'weather'> & {
+export type TForecast = Pick<MZipcode, 'condition' | 'weather'> & {
     temperature:    TTemperature;
     date?:          Date;
 };

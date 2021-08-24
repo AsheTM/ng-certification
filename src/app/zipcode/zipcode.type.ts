@@ -1,7 +1,8 @@
-import { TTemperature, TZipcode } from "../shared";
+import { TTemperature, MZipcode } from "../shared";
 
 
-export type TWeather = TZipcode & {
+export type TWeather = MZipcode & {
+    location:       string;
     temperature:    TWeatherTemperature;
 };
 

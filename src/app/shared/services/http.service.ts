@@ -15,24 +15,23 @@ import {
   TSharedModuleConfigurationInterceptor
 } from '../shared.type';
 
-import { EHttpErrorCode } from '../enum';
-import { THttpError } from '../type';
+import { EHttpErrorCode } from '../enums';
+import { THttpError } from '../types';
+import { ApiHttpHandler } from '../http-handlers';
 
 
 @Injectable({
   providedIn: SharedModule
 })
-export class HttpService {
+export class HttpService extends HttpClient {
 
-  private readonly HTTP_URL:          string    = this._sharedModuleConfigurationRootHttp.url;
-  private readonly HTTP_PARAM:        string    = this._sharedModuleConfigurationRootHttp.param;
-  private readonly HTTP_API_KEY:      string    = this._sharedModuleConfigurationRootHttp.apiKey;
+  private readonly HTTP_URL:            string    = this._sharedModuleConfigurationRootHttp.url;
+  private readonly HTTP_PARAM_LOCATION: string    = this._sharedModuleConfigurationRootHttp.params.location;
+  private readonly HTTP_PARAM_ZIPCODE:  string    = this._sharedModuleConfigurationRootHttp.params.zipcode;
 
-  private readonly FALLBACK_URL:      string    = this._sharedModuleConfigurationRootFallback?.url;
-  private readonly FALLBACK_PARAM:    string    = this._sharedModuleConfigurationRootFallback?.param;
-  private readonly FALLBACK_STATIC:   string[]  = this._sharedModuleConfigurationRootFallback?.static;
-
-  private readonly INTERCEPTOR_PARAM: string    = this._sharedModuleConfigurationRootInterceptor.param;
+  private readonly FALLBACK_URL:            string    = this._sharedModuleConfigurationRootFallback?.url;
+  private readonly FALLBACK_PARAM_LOCATION: string    = this._sharedModuleConfigurationRootFallback?.params.location;
+  private readonly FALLBACK_PARAM_ZIPCODE:  string    = this._sharedModuleConfigurationRootFallback?.params.zipcode;
 
   constructor(
     @Inject(SHARED_TOKEN_VALUE_HTTP) 
@@ -41,32 +40,30 @@ export class HttpService {
     @Optional()
     @Inject(SHARED_TOKEN_VALUE_FALLBACK) 
       private _sharedModuleConfigurationRootFallback: TSharedModuleConfigurationFallback, 
-    @Inject(SHARED_TOKEN_VALUE_INTERCEPTOR) 
-      private _sharedModuleConfigurationRootInterceptor: TSharedModuleConfigurationInterceptor, 
-    private _httpClient: HttpClient
-  ) { }
-
-  getData<T = any>(id: string): Observable<T | THttpError | unknown> {
-    return this._httpClient.get<T>(this.HTTP_URL, {
-      params: {
-        [this.HTTP_PARAM]: id, 
-        appid: this.HTTP_API_KEY, 
-        [this.INTERCEPTOR_PARAM]: this.HTTP_PARAM
-      }
-    }).pipe(catchError(() => this._buildFallbackRequest(id)));
+    private _apiHttpHandler: ApiHttpHandler
+  ) {
+    super(_apiHttpHandler);
   }
 
-  private _buildFallbackRequest<T = any>(id: string): Observable<T> {
+  getData<T = any>(zipcode: string, location: string): Observable<T | THttpError | unknown> {
+    return super.get<T>(this.HTTP_URL, {
+      params: {
+        [this.HTTP_PARAM_LOCATION]: location, 
+        [this.HTTP_PARAM_ZIPCODE]:  zipcode
+      }
+    }).pipe(catchError(() => this._buildFallbackRequest(zipcode, location)));
+  }
+
+  private _buildFallbackRequest<T = any>(zipcode: string, location?: string): Observable<T> {
     switch(true) {
       case !this.FALLBACK_URL: 
-      case !this.FALLBACK_PARAM: 
-      case !this.FALLBACK_STATIC.includes(id): 
+      case !this.FALLBACK_PARAM_ZIPCODE: 
         return throwError({ code: EHttpErrorCode.NO_FALLBACK_PROVIDED });
       default: 
-        return this._httpClient.get<T>(this.FALLBACK_URL, {
+        return super.get<T>(this.FALLBACK_URL, {
           params: {
-            [this.FALLBACK_PARAM]: id, 
-            [this.INTERCEPTOR_PARAM]: this.FALLBACK_PARAM
+            [this.FALLBACK_PARAM_LOCATION]: location, 
+            [this.FALLBACK_PARAM_ZIPCODE]:  zipcode
           }
         });
     }

@@ -1,0 +1,18 @@
+
+<input class="form-control" 
+    tabindex="0" 
+    type="text" 
+    [formControl]="formControl" 
+    [placeholder]="placeholder" 
+    (blur)="onBlurEventHandler()" 
+    (focus)="onFocusEventHandler()" />
+
+<ng-container *ngIf="(autofilter | filter:value:'value'); let data">
+    <div *ngIf="data?.length > 0" 
+        class="autofilter" 
+        [class.show]="show">
+        <span *ngFor="let data of data" 
+            [innerHtml]="data.value | bold:value" 
+            (click)="onClickEventHandler(data)"></span>
+    </div>
+</ng-container>

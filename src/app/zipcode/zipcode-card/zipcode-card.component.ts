@@ -13,6 +13,7 @@ export class ZipcodeCardComponent {
   
   @Input() condition:   string
   @Input() name:        string;
+  @Input() location:    string;
   @Input() temperature: TWeatherTemperature;
   @Input() weather:     EWeatherIcon;
   @Input() zipcode:     string;
@@ -21,6 +22,13 @@ export class ZipcodeCardComponent {
 
   get icon(): string {
     return `https://www.angulartraining.com/images/weather/${this.weather}.png`;
+  }
+
+  get queryParams(): Record<string, number | string> {
+    return {
+      location: this.location, 
+      zipcode:  this.zipcode
+    };
   }
 
   onClickEventHandler(): void {

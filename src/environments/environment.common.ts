@@ -18,26 +18,29 @@ export const sharedModuleConfiguration: EnvironmentConfigurationShared = {
     forecast: {
       http:         {
         url:      'https://api.openweathermap.org/data/2.5/forecast',
-        param:    'zip', 
+        params:   {
+          location: 'q', 
+          zipcode:  'zip'
+        }, 
         apiKey:   '5a4b2d457ecbef9eb2a71e480b947604'
-      },
-      fallback:     {
-        url:    '', 
-        param:  'zipcode', 
-        static: ['95742', '10001', '33101']
       }
     }, 
     zipcode:  {
       http:         {
         url:      'https://api.openweathermap.org/data/2.5/weather', 
-        param:    'zip', 
+        params:   {
+          location: 'q', 
+          zipcode:  'zip'
+        }, 
         apiKey:   '5a4b2d457ecbef9eb2a71e480b947604', 
         interval: 30000
       },
       fallback:     {
-        url:    'https://lp-store.herokuapp.com/weather', 
-        param:  'zipcode', 
-        static: ['95742', '10001', '33101']
+        url:      'https://lp-store.herokuapp.com/weather', 
+        params:   {
+          location: 'q', 
+          zipcode:  'zipcode'
+        }
       }
     }
   }

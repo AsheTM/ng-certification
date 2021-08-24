@@ -1,4 +1,4 @@
-import { EHttpErrorCode } from "../enum";
+import { EHttpErrorCode } from "../enums";
 
 
 export type THttpError = {

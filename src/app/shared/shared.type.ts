@@ -8,15 +8,14 @@ export type TSharedModuleConfiguration              = {
 
 export type TSharedModuleConfigurationHttp          = {
     url:        string;
-    param:      string;
+    params:     Record<'location' | 'zipcode', string>;
     apiKey:     string;
     interval?:  number;
 };
 
 export type TSharedModuleConfigurationFallback      = {
     url:        string;
-    param:      string;
-    static?:    string[];
+    params:     Partial<Record<'location' | 'zipcode', string>>;
 };
 
 export type TSharedModuleConfigurationInterceptor   = {

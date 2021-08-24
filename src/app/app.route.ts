@@ -1,6 +1,5 @@
 
 namespace Route {
-    export const ROOT:          string = '';
     export const WILDCARD:      string = '**';
     export const REDIRECT_TO:   string = '/';
 
@@ -10,7 +9,6 @@ namespace Route {
     }
 }
 
-export const APP_ROUTE_ROOT:                string = Route.ROOT;
 export const APP_ROUTE_WILDCARD:            string = Route.WILDCARD;
 export const APP_ROUTE_REDIRECT_TO:         string = Route.REDIRECT_TO;
 

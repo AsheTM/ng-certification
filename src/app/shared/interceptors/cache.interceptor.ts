@@ -12,7 +12,7 @@ import { tap } from 'rxjs/operators';
 import { SHARED_TOKEN_VALUE_INTERCEPTOR } from '../shared.token';
 import { TSharedModuleConfigurationInterceptor } from '../shared.type';
 
-import { TCache } from '../type';
+import { TCache } from '../types';
 
 
 @Injectable()

@@ -11,13 +11,13 @@ import { TSharedModuleConfigurationHttp } from '../shared.type';
 })
 export class IntervalService {
 
-  private readonly INTERVAL:  number | undefined  = this._sharedTokenValueHttp.interval;
+  private readonly INTERVAL:  number | undefined  = this._sharedModuleConfigurationRootHttp.interval;
   
   interval$:  Observable<void>  = iif(() => this.INTERVAL !== undefined, timer(0, this.INTERVAL), of(null));
 
   constructor(
     @Inject(SHARED_TOKEN_VALUE_HTTP) 
-      private _sharedTokenValueHttp:  TSharedModuleConfigurationHttp
+      private _sharedModuleConfigurationRootHttp: TSharedModuleConfigurationHttp
   ) { }
 
 }

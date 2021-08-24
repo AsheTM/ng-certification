@@ -1,7 +1,7 @@
 import { Inject, ModuleWithProviders, NgModule, Optional, Self, SkipSelf } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ESharedProvider } from './shared.enum';
 import {
@@ -14,24 +14,42 @@ import {
 } from './shared.token';
 import { TSharedModuleConfiguration } from './shared.type';
 
-import { CapitalCasePipe } from './pipes';
+import {
+  SharedButtonComponent, 
+  SharedInputComponent
+} from './components';
 import { CacheInterceptor } from './interceptors';
+import { CapitalCasePipe, BoldPipe, FilterPipe } from './pipes';
 
 
 @NgModule({
+  declarations: [
+    SharedButtonComponent, 
+    SharedInputComponent, 
+
+    BoldPipe, 
+    CapitalCasePipe, 
+    FilterPipe
+  ], 
   imports: [
     CommonModule, 
     FormsModule, 
+    ReactiveFormsModule, 
     HttpClientModule
   ], 
   exports: [
     CommonModule, 
     FormsModule, 
+    ReactiveFormsModule, 
     HttpClientModule, 
 
-    CapitalCasePipe
+    SharedButtonComponent, 
+    SharedInputComponent, 
+
+    BoldPipe, 
+    CapitalCasePipe, 
+    FilterPipe
   ], 
-  declarations: [CapitalCasePipe], 
   providers:    [
     {
       provide:  HTTP_INTERCEPTORS, 
@@ -96,7 +114,8 @@ export class SharedModule {
   static forFeature({
     http, 
     fallback
-  }: Pick<TSharedModuleConfiguration, 'http' | 'fallback'>): ModuleWithProviders<SharedModule> {
+  }: Pick<TSharedModuleConfiguration, 'http'> 
+    & Partial<Pick<TSharedModuleConfiguration, 'fallback'>>): ModuleWithProviders<SharedModule> {
     return {
       ngModule: SharedModule, 
       providers: [

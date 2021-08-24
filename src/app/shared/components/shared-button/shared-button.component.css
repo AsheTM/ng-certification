@@ -1,0 +1,21 @@
+
+:host(.shared-button-done, .shared-button-loading){
+  border-color: transparent;
+}
+
+:host(.shared-button-done){
+  background-color: #198754;
+}
+
+:host(.shared-button-loading){
+  background-color: #7ba9d0;
+}
+
+:host img{
+  max-width: 20px;
+  max-height: 20px;
+  object-fit: contain;
+  margin-right: 3px;
+  margin-left: -3px;
+  order: 1;
+}

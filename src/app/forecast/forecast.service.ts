@@ -1,26 +1,24 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { from, GroupedObservable, Observable, of, zip } from 'rxjs';
-import { groupBy, map, mergeMap, pluck, reduce, switchMap, take, toArray } from 'rxjs/operators';
+import { groupBy, map, mergeMap, pluck, reduce, shareReplay, switchMap, take, toArray } from 'rxjs/operators';
 
-import { FORECAST_ROUTE_ROOT_PARAM_ID } from './forecast.route';
 import { TForecast, TForecasts, TMapForecast, TZipForecast } from './forecast.type';
 
-import { APP_ROUTE_ROOT } from '../app.route';
+import { APP_ROUTE_FEATURE_ZIPCODE } from '../app.route';
 
 import { getWeatherIcon, HttpService, TTemperature } from '../shared';
 
 
 @Injectable()
 export class ForecastService {
-
-  private _zipcode$:      Observable<string>        = this._activatedRoute.params
-    .pipe(pluck(FORECAST_ROUTE_ROOT_PARAM_ID));
   
-  private _forecast$:     Observable<any>           = this._zipcode$
+  private _forecast$:     Observable<any>           = this._activatedRoute.queryParams
     .pipe(
-      switchMap((zipcode: string) => this._httpService.getData<any>(zipcode)), 
-      take(1)
+      take(1), 
+      switchMap(({ location, zipcode }: Record<'location' | 'zipcode', string>) => 
+        this._httpService.getData<any>(zipcode, location)), 
+      shareReplay(1)
     );
   forecastCityName$:      Observable<string>        = this._forecast$
     .pipe(pluck('city', 'name'));
@@ -46,13 +44,15 @@ export class ForecastService {
         group.pipe(
           toArray(), 
           map<TForecasts, TForecast>((forecasts: TForecasts) => {
-            const { min, max }: TTemperature = forecasts.reduce((acc: TTemperature, { temperature }: TForecast) => ({
-              min: acc.min + temperature.min, 
-              max: acc.max + temperature.max
-            }), {
-              min: 0, 
-              max: 0
-            });
+            const { min, max }: TTemperature 
+              = forecasts.reduce((acc: TTemperature, { temperature }: TForecast) => ({
+                min: acc.min + temperature.min, 
+                max: acc.max + temperature.max
+              }), {
+                min: 0, 
+                max: 0
+              });
+
             return {
               condition:    forecasts[0].condition, 
               temperature:  {
@@ -64,7 +64,10 @@ export class ForecastService {
           })
         )
       )), 
-      reduce((acc: TMapForecast, [dateStringified, forecast]: TZipForecast) => void (acc[dateStringified] = forecast) || acc, {})
+      reduce((acc: TMapForecast, [dateStringified, forecast]: TZipForecast) => ({
+        ...acc, 
+        [dateStringified]:  forecast
+      }), {})
     );
 
   constructor(
@@ -74,7 +77,7 @@ export class ForecastService {
   ) { }
 
   navigateBack(): void {
-    this._router.navigateByUrl(APP_ROUTE_ROOT);
+    this._router.navigateByUrl(APP_ROUTE_FEATURE_ZIPCODE);
   }
 
 }

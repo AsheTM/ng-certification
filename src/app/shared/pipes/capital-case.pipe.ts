@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 
 @Pipe({
-  name: 'sharedCapitalCase'
+  name: 'capitalCase'
 })
 export class CapitalCasePipe implements PipeTransform {
 

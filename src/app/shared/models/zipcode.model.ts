@@ -1,6 +1,7 @@
-import { EWeatherIcon } from "./weather.enum";
+import { EWeatherIcon } from "../enums";
 
-export type TZipcode = {
+
+export interface MZipcode {
     condition:  string;
     name:       string;
     zipcode:    string;

@@ -5,6 +5,7 @@ import {
   TSharedModuleConfigurationStorage,
   TSharedModuleConfigurationInterceptor
 } from 'src/app/shared';
+
 import { EEnvironmentFeature } from './environment.enum';
 
 
@@ -25,17 +26,14 @@ export type EnvironmentConfigurationShared            = {
   feature:  EnvironmentConfigurationSharedFeatures;
 };
 
-export type EnvironmentConfigurationSharedRoot        = EnvironmentConfigurationSharedStorage 
-  & EnvironmentConfigurationSharedInterceptor;
+export type EnvironmentConfigurationSharedRoot        = EnvironmentConfigurationSharedInterceptor 
+  & EnvironmentConfigurationSharedStorage;
 
 export type EnvironmentConfigurationSharedFeatures    = Record<EEnvironmentFeature, EnvironmentConfigurationSharedFeature>;
-
-export type EnvironmentConfigurationSharedFeature     = EnvironmentConfigurationSharedHttp & EnvironmentConfigurationSharedFallback;
+export type EnvironmentConfigurationSharedFeature     = EnvironmentConfigurationSharedHttp 
+  & Partial<EnvironmentConfigurationSharedFallback>;
 
 export type EnvironmentConfigurationSharedFallback    = Record<'fallback', TSharedModuleConfigurationFallback>;
-
 export type EnvironmentConfigurationSharedHttp        = Record<'http', TSharedModuleConfigurationHttp>;
-
 export type EnvironmentConfigurationSharedInterceptor = Record<'interceptor', TSharedModuleConfigurationInterceptor>;
-
 export type EnvironmentConfigurationSharedStorage     = Record<'storage', TSharedModuleConfigurationStorage>;

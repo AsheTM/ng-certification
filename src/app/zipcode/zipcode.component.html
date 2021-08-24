@@ -2,20 +2,68 @@
 <h4>Template for main page:</h4>
 
 <div class="container-fluid">
-    <div class="well">
+    <div class="well" *ngIf="{
+        isDone:     isDoneState$ | async, 
+        isLoading:  isLoadingState$ | async
+    }; let state">
         <h2>Enter a zipcode:</h2>
-        <input #Zipcode class="form-control" placeholder="Zipcode" type="text" id="addLocation">
-        <br>
-        <button class="btn btn-primary" id="addLocationBtn" (click)="onClickEventHandler(Zipcode.value)">Add location</button>
+        <input id="addLocation"
+            #Zipcode 
+            class="form-control" 
+            placeholder="Zipcode" 
+            type="text" 
+            [disabled]="state.isLoading || state.isDone" 
+            (ngModel)="Location.value" />
+        
+        <br />
+
+        <h2>Enter a location:</h2>
+        <app-shared-input #Location 
+            placeholder="City"
+            [autofilter]="autofilterData$ | async" 
+            [disabled]="state.isLoading || state.isDone" 
+            [value]="(localStorageData$ | async)[Zipcode.value]"></app-shared-input>
+
+        <br />
+
+        <!-- * Testing the customizable component -->
+        <!-- TODO: Uncomment that comment -->
+        <!-- <style>
+            .shared-button-done-custom {
+                background-color: blue !important;
+                font-weight: bolder;
+            }
+            .shared-button-loading-custom {
+                background-color: red !important;
+                font-weight: bolder;
+            }
+        </style>
+        <app-shared-button id="addLocationBtn" 
+            [disabled]="!Location.value || !Zipcode.value" 
+            [done]="state.isDone" 
+            [icon]="state.isDone ? '/assets/done-icon.png' : null"
+            [loading]="state.isLoading" 
+            shared-button-done="shared-button-done-custom"
+            shared-button-loading="shared-button-loading-custom"
+            (click)="onClickEventHandler(Zipcode.value, Location.value)">{{ textButton$ | async }}</app-shared-button> -->
+        
+        <!-- TODO: Comment that html tag -->
+        <app-shared-button id="addLocationBtn" 
+            [disabled]="!Location.value || !Zipcode.value" 
+            [done]="state.isDone" 
+            [icon]="state.isDone ? '/assets/done-icon.png' : null"
+            [loading]="state.isLoading" 
+            (click)="onClickEventHandler(Zipcode.value, Location.value)">{{ textButton$ | async }}</app-shared-button>
     </div>
 
     <div>
         <app-zipcode-card *ngFor="let weather of weathers$ | async" 
-            (close)="onCloseEventHandler($event)" 
             [condition]="weather.condition" 
+            [location]="weather.location" 
             [name]="weather.name" 
             [temperature]="weather.temperature" 
             [weather]="weather.weather" 
-            [zipcode]="weather.zipcode"></app-zipcode-card>
+            [zipcode]="weather.zipcode" 
+            (close)="onCloseEventHandler($event)"></app-zipcode-card>
     </div>
 </div>

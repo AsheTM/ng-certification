@@ -14,40 +14,51 @@ export class LocalStorageService {
   private readonly LOCAL_STORE: Storage = window.localStorage;
   private readonly name:        string  = this.sharedConfigurationStorage.name;
 
-  private _itemsSubject:  BehaviorSubject<string[]> = new BehaviorSubject<string[]>(this._getItems());
-  itemsSubject$:          Observable<string[]>      = this._itemsSubject.asObservable();
+  private _itemsSubject:  BehaviorSubject<Record<string, string>> 
+    = new BehaviorSubject<Record<string, string>>(this._getItems());
+  itemsSubject$:          Observable<Record<string, string>> 
+    = this._itemsSubject.asObservable();
 
   constructor(
     @Inject(SHARED_TOKEN_VALUE_STORAGE) 
       private sharedConfigurationStorage: TSharedModuleConfigurationStorage
   ) { }
 
-  setItem(item: string): void {
-    const items:              string[]  = this._getItems();
-    const itemsNew:           string[]  = [...new Set([...items, item])];
-    const itemsNewStringify:  string    = JSON.stringify(itemsNew);
+  setItem(item: Record<string, string>): void {
+    const items:              Record<string, string>  = this._getItems();
+    const newItems:           Record<string, string>  = {
+      ...items, 
+      ...item
+    };
+    const newItemsStringify:  string                  = JSON.stringify(newItems);
 
-    this.LOCAL_STORE.setItem(this.name, itemsNewStringify);
-
-    this._itemsSubject.next(itemsNew);
+    this.LOCAL_STORE.setItem(this.name, newItemsStringify);
+    this._itemsSubject.next(newItems);
   }
 
   deleteItem(item: string): boolean {
-    const items:                  string[]  = this._getItems();
-    const itemsFiltered:          string[]  = items.filter((itm: string) => itm !== item);
-    const itemsFilteredStringify: string    = JSON.stringify(itemsFiltered);
+    const items:    Record<string, string> 
+      = this._getItems();
+    const newItems: Record<string, string> 
+      = { ...items };
     
-    this.LOCAL_STORE.setItem(this.name, itemsFilteredStringify);
+    delete newItems[item];
 
-    this._itemsSubject.next(itemsFiltered);
+    const check:              boolean 
+      = Object.entries(items).length !== Object.entries(newItems).length;
+    const newItemsStringify:  string
+      = JSON.stringify(newItems);
+    
+    this.LOCAL_STORE.setItem(this.name, newItemsStringify);
+    this._itemsSubject.next(newItems);
 
-    return items.length !== itemsFiltered.length;
+    return check;
   }
 
-  private _getItems(): string[] {
+  private _getItems(): Record<string, string> {
     const itemsStringify: string = this.LOCAL_STORE.getItem(this.name);
     
-    return JSON.parse(itemsStringify) || [];
+    return JSON.parse(itemsStringify) || {};
   }
 
 }

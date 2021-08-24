@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ZipcodeService } from './zipcode.service';
 import { TWeather } from './zipcode.type';
+
+import { SharedInputComponent, TKeyValue } from '../shared';
 
 
 @Component({
@@ -12,17 +14,30 @@ import { TWeather } from './zipcode.type';
   changeDetection:  ChangeDetectionStrategy.OnPush, 
   providers:        [ZipcodeService]
 })
-export class ZipcodeComponent {
+export class ZipcodeComponent implements OnInit {
 
-  @ViewChild('Zipcode') zipcodeInputRef: ElementRef<HTMLInputElement>;
-  
-  weathers$: Observable<TWeather[]> = this._zipcodeService.weathersZipcode$;
+  @ViewChild('Location')  locationInputRef: SharedInputComponent;
+  @ViewChild('Zipcode')   zipcodeInputRef:  ElementRef<HTMLInputElement>;
+
+  autofilterData$:    Observable<TKeyValue[]>             = this._zipcodeService.autofilterDataZipcode$;
+  isDoneState$:       Observable<boolean>                 = this._zipcodeService.isDoneStateZipcodeSubject$;
+  isLoadingState$:    Observable<boolean>                 = this._zipcodeService.isLoadingStateZipcodeSubject$;
+  localStorageData$:  Observable<Record<string, string>>  = this._zipcodeService.localStorageDataZipcode$;
+  textButton$:        Observable<string>                  = this._zipcodeService.textButtonZipcodes$;
+  weathers$:          Observable<TWeather[]>              = this._zipcodeService.weathersZipcode$;
 
   constructor(private _zipcodeService: ZipcodeService) { }
 
-  onClickEventHandler(zipcode: string): void {
+  ngOnInit(): void {
+    this._zipcodeService.enableAutoRefreshWeathers();
+  }
+
+  onClickEventHandler(zipcode: string, location: string): void {
     this._clearZipcodeinput();
-    this._zipcodeService.getZipcode(zipcode);
+    this._zipcodeService.getLocationAndZipcode({
+      location, 
+      zipcode
+    });
   }
 
   onCloseEventHandler(zipcode: string): void {
@@ -30,6 +45,7 @@ export class ZipcodeComponent {
   }
   
   private _clearZipcodeinput() {
+    this.locationInputRef.writeValue('');
     this.zipcodeInputRef.nativeElement.value = null;
   }
 

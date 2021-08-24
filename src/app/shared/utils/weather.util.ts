@@ -1,4 +1,4 @@
-import { EWeatherIcon } from "../enum";
+import { EWeatherIcon } from "../enums";
 
 
 export function getWeatherIcon(weather: string): EWeatherIcon {
