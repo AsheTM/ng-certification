@@ -19,7 +19,8 @@
 
         <h2>Enter a location:</h2>
         <app-shared-input #Location 
-            placeholder="City"
+            autofilterMinLength="0"
+            placeholder="Location"
             [autofilter]="autofilterData$ | async" 
             [disabled]="state.isLoading || state.isDone" 
             [value]="(localStorageData$ | async)[Zipcode.value]"></app-shared-input>

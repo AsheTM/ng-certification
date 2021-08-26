@@ -10,8 +10,9 @@ export class FilterPipe implements PipeTransform {
     return data.filter((item: unknown) => {
         let itm: string = String((key !== undefined && key !== null) ? item[key] : item);
         
-        return Boolean(value) && itm.toLowerCase()
-          .includes(value.toLowerCase());
+        return !value 
+          || itm.toLowerCase()
+            .includes(value.toLowerCase());
       });
   }
 

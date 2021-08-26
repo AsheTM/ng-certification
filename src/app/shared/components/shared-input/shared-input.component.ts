@@ -32,11 +32,11 @@ export class SharedInputComponent implements ControlValueAccessor, OnChanges, On
   private _onTouched:                           ()        => void         = ()        => {};
 
   get value(): string {
-    return this.formControl.value as string;
+    return (this.formControl.value as string || '');
   }
 
   get show(): boolean {
-    return !this.disabled && !this.hide && this.value?.length >= this.autofilterMinLength;
+    return !this.disabled && !this.hide && (this.value?.length >= this.autofilterMinLength || this.autofilterMinLength === 0);
   }
 
   private get _data(): Record<string, unknown> {
