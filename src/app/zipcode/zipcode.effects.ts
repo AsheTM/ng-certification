@@ -19,7 +19,13 @@ import {
 import { Action } from './zipcode.store';
 import { TWeather } from './zipcode.type';
 
-import { EHttpErrorCode, getWeatherIcon, HttpService, LocalStorageService, THttpError } from '../shared';
+import {
+  EHttpErrorCode, 
+  getWeatherIcon, 
+  DataService, 
+  LocalStorageService, 
+  THttpError
+} from '../shared';
 
 
 @Injectable()
@@ -56,7 +62,7 @@ export class ZipcodeEffects {
 
   constructor(
     private _actions$:            Actions, 
-    private _httpService:         HttpService, 
+    private _httpService:         DataService, 
     private _localStorageService: LocalStorageService
   ) { }
 

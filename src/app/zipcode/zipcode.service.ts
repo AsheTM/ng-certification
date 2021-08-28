@@ -1,9 +1,10 @@
 import { Injectable, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { from, Observable, Subscription } from 'rxjs';
-import { map, switchMap, switchMapTo, toArray } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { map, pluck, switchMapTo } from 'rxjs/operators';
 
-import { EZipcodeState } from './zipcode.enum';
+import { ZIPCODE_CONSTANT_RESOLVER_COUNTRIES } from './zipcode.constant';
 import { Action, RootState, Selector } from './zipcode.store';
 import { TWeather } from './zipcode.type';
 
@@ -17,51 +18,30 @@ export class ZipcodeService implements OnDestroy {
     = this._localStorageService.itemsSubject$;
   
   autofilterDataZipcode$:   Observable<TKeyValue<string, string>[]>
-    = this.localStorageDataZipcode$
-      .pipe(
-        map(Object.entries), 
-        switchMap((entries: [string, string][]) => 
-          from(entries).pipe(
-            map(([key, value]: [string, string]) => ({ key, value })), 
-            toArray()))
-      );
-
-  private _loadingStateZipcodeSelector$:  Observable<EZipcodeState> 
-    = this._store.select(Selector.getLoadingState);
-  isLoadingStateZipcodeSubject$:          Observable<boolean> 
-    = this._loadingStateZipcodeSelector$
-      .pipe(map((state: EZipcodeState) => state === EZipcodeState.WORKING));
+    = this._activatedRoute.data
+      .pipe(pluck(ZIPCODE_CONSTANT_RESOLVER_COUNTRIES));
+  
   isDoneStateZipcodeSubject$:             Observable<boolean> 
-    = this._loadingStateZipcodeSelector$
-      .pipe(map((state: EZipcodeState) => state === EZipcodeState.DONE));
+    = this._store.select(Selector.isDoneLoadingState);
+  isLoadingStateZipcodeSubject$:          Observable<boolean> 
+    = this._store.select(Selector.isWorkingLoadingState);
   textButtonZipcodes$:                    Observable<string> 
-    = this._loadingStateZipcodeSelector$
-      .pipe(map((state: EZipcodeState) => {
-        switch(state) {
-          case EZipcodeState.DEFAULT: 
-            return 'Add location';
-          case EZipcodeState.WORKING: 
-            return 'Adding...';
-          case EZipcodeState.DONE: 
-            return 'Done';
-          default: 
-            return 'unknown text';
-        }
-      }));
+    = this._store.select(Selector.getTextLoadingState);
   weathersZipcode$:                       Observable<TWeather[]> 
     = this._store.select(Selector.getWeathers);
   
   private _autoRefreshWeathersZipcode$:   Observable<void> 
     = this._intervalService.interval$
       .pipe(
-        switchMapTo(this.localStorageDataZipcode$), 
+        switchMapTo(this._localStorageService.itemsSubject$), 
         map(Object.entries), 
         map((data: [string, string][]) => void this._store.dispatch(Action.getData({ data })))
       );
   private _autoRefreshWeathersZipcodeSubscription:  Subscription | undefined;
 
   constructor(
-    private _store:               Store<RootState>,
+    private _activatedRoute:      ActivatedRoute, 
+    private _store:               Store<RootState>, 
     private _intervalService:     IntervalService, 
     private _localStorageService: LocalStorageService
   ) { }

@@ -2,7 +2,14 @@
 // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 import { coreModuleConfigurationRoot, sharedModuleConfiguration } from './environment.common';
-import { EnvironmentType } from './environment.type';
+import {
+  EnvironmentConfigurationSharedFeature, 
+  EnvironmentConfigurationSharedFeatures, 
+  EnvironmentConfigurationSharedRoot, 
+  EnvironmentType
+} from './environment.type';
+
+import { TSharedModuleConfigurationApi, TSharedModuleConfigurationHttp } from 'src/app/shared';
 
 
 export const environment: EnvironmentType = {
@@ -10,8 +17,30 @@ export const environment: EnvironmentType = {
   configuration:  {
     core:   coreModuleConfigurationRoot, 
     shared: {
-      root:     sharedModuleConfiguration.root, 
-      feature:  sharedModuleConfiguration.feature
+      root: {
+        ...sharedModuleConfiguration?.root as EnvironmentConfigurationSharedRoot, 
+        api:  {
+          ...sharedModuleConfiguration?.root?.api as TSharedModuleConfigurationApi, 
+          url:    '/countries'
+        }
+      }, 
+      feature:  {
+        ...sharedModuleConfiguration?.feature as EnvironmentConfigurationSharedFeatures, 
+        forecast: {
+          ...sharedModuleConfiguration?.feature?.forecast as EnvironmentConfigurationSharedFeature, 
+          http: {
+            ...sharedModuleConfiguration?.feature?.forecast?.http as TSharedModuleConfigurationHttp, 
+            url:  '/api/forecast'
+          }
+        }, 
+        zipcode:  {
+          ...sharedModuleConfiguration?.feature?.forecast as EnvironmentConfigurationSharedFeature, 
+          http: {
+            ...sharedModuleConfiguration?.feature?.forecast?.http as TSharedModuleConfigurationHttp, 
+            url:  '/api/weather'
+          }
+        }
+      }
     }
   }
 };

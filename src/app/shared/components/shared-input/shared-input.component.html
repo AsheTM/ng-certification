@@ -7,12 +7,14 @@
     (blur)="onBlurEventHandler()" 
     (focus)="onFocusEventHandler()" />
 
-<ng-container *ngIf="(autofilter | filter:value:'value'); let data">
+<ng-container *ngIf="(autofilter | filter:formControlValue:'value'); let data">
     <div *ngIf="data?.length > 0" 
         class="autofilter" 
         [class.show]="show">
         <span *ngFor="let data of data" 
-            [innerHtml]="data.value | bold:value" 
-            (click)="onClickEventHandler(data)"></span>
+            tabindex="0" 
+            [innerHtml]="data.value | bold:formControlValue" 
+            (click)="onClickEventHandler(data.value)" 
+            (focus)="onFocusEventHandler()"></span>
     </div>
 </ng-container>

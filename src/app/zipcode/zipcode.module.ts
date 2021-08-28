@@ -12,6 +12,7 @@ import { ZipcodeCardComponent } from './zipcode-card';
 import { SharedModule } from '../shared';
 
 import { environment } from 'src/environments';
+import { ZipcodeCountriesResolver } from './zipcode-countries.resolver';
 
 
 @NgModule({
@@ -29,6 +30,9 @@ import { environment } from 'src/environments';
     }), 
 
     ZipcodeRoutingModule
+  ], 
+  providers:    [
+    ZipcodeCountriesResolver
   ]
 })
 export class ZipcodeModule { }

@@ -6,31 +6,27 @@ import { catchError } from 'rxjs/operators';
 import { SharedModule } from '../shared.module';
 import {
   SHARED_TOKEN_VALUE_FALLBACK, 
-  SHARED_TOKEN_VALUE_HTTP, 
-  SHARED_TOKEN_VALUE_INTERCEPTOR
+  SHARED_TOKEN_VALUE_HTTP
 } from '../shared.token';
 import {
   TSharedModuleConfigurationFallback, 
-  TSharedModuleConfigurationHttp, 
-  TSharedModuleConfigurationInterceptor
+  TSharedModuleConfigurationHttp
 } from '../shared.type';
 
 import { EHttpErrorCode } from '../enums';
+import { DataHttpHandler } from '../http-handlers';
 import { THttpError } from '../types';
-import { ApiHttpHandler } from '../http-handlers';
 
 
 @Injectable({
   providedIn: SharedModule
 })
-export class HttpService extends HttpClient {
+export class DataService extends HttpClient {
 
   private readonly HTTP_URL:            string    = this._sharedModuleConfigurationRootHttp.url;
-  private readonly HTTP_PARAM_LOCATION: string    = this._sharedModuleConfigurationRootHttp.params.location;
   private readonly HTTP_PARAM_ZIPCODE:  string    = this._sharedModuleConfigurationRootHttp.params.zipcode;
 
   private readonly FALLBACK_URL:            string    = this._sharedModuleConfigurationRootFallback?.url;
-  private readonly FALLBACK_PARAM_LOCATION: string    = this._sharedModuleConfigurationRootFallback?.params.location;
   private readonly FALLBACK_PARAM_ZIPCODE:  string    = this._sharedModuleConfigurationRootFallback?.params.zipcode;
 
   constructor(
@@ -40,7 +36,7 @@ export class HttpService extends HttpClient {
     @Optional()
     @Inject(SHARED_TOKEN_VALUE_FALLBACK) 
       private _sharedModuleConfigurationRootFallback: TSharedModuleConfigurationFallback, 
-    private _apiHttpHandler: ApiHttpHandler
+    private _apiHttpHandler: DataHttpHandler
   ) {
     super(_apiHttpHandler);
   }
@@ -48,8 +44,7 @@ export class HttpService extends HttpClient {
   getData<T = any>(zipcode: string, location: string): Observable<T | THttpError | unknown> {
     return super.get<T>(this.HTTP_URL, {
       params: {
-        [this.HTTP_PARAM_LOCATION]: location, 
-        [this.HTTP_PARAM_ZIPCODE]:  zipcode
+        [this.HTTP_PARAM_ZIPCODE]:  `${zipcode},${location}`
       }
     }).pipe(catchError(() => this._buildFallbackRequest(zipcode, location)));
   }
@@ -62,8 +57,7 @@ export class HttpService extends HttpClient {
       default: 
         return super.get<T>(this.FALLBACK_URL, {
           params: {
-            [this.FALLBACK_PARAM_LOCATION]: location, 
-            [this.FALLBACK_PARAM_ZIPCODE]:  zipcode
+            [this.FALLBACK_PARAM_ZIPCODE]:  `${zipcode},${location}`
           }
         });
     }

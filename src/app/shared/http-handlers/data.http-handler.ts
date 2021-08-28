@@ -10,7 +10,7 @@ import { TSharedModuleConfigurationHttp, TSharedModuleConfigurationInterceptor }
 @Injectable({
   providedIn: SharedModule
 })
-export class ApiHttpHandler implements HttpHandler {
+export class DataHttpHandler implements HttpHandler {
 
     private readonly HTTP_PARAM_ZIPCODE:    string  = this._sharedModuleConfigurationRootHttp.params.zipcode;
     private readonly HTTP_API_KEY:          string  = this._sharedModuleConfigurationRootHttp.apiKey;

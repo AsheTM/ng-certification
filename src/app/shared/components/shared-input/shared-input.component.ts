@@ -18,35 +18,47 @@ export class SharedInputComponent implements ControlValueAccessor, OnChanges, On
   @Input()  autofilterMinLength:  number                        = 2;
   @Input()  disabled:             boolean                       = false;
   @Input()  set value(val: string | undefined | null) {
-    this.onClickEventHandler({
-      key:    null, 
-      value:  val
-    });
+    if(!val) {
+      return;
+    }
+
+    this.onClickEventHandler(val);
   }
 
-  hide:         boolean     = false;
   formControl:  FormControl = new FormControl('');
   
   private _formControlValueChangesSubscription: Subscription | undefined  = undefined;
+  private _hide:                                boolean                   = true;
   private _onChange:                            (v: any)  => void         = (_: any)  => {};
   private _onTouched:                           ()        => void         = ()        => {};
+  private _dataValueKey:                        Record<string, string>    = {};
 
+  get formControlValue(): string{
+    return this.formControl.value || '';
+  }
+  
   get value(): string {
-    return (this.formControl.value as string || '');
+    return this._dataValueKey[this.formControlValue];
   }
 
   get show(): boolean {
-    return !this.disabled && !this.hide && (this.value?.length >= this.autofilterMinLength || this.autofilterMinLength === 0);
-  }
-
-  private get _data(): Record<string, unknown> {
-    return this.autofilter.reduce((acc: any, { key, value }: TKeyValue) => ({
-        ...acc, 
-        [value]: key
-      }), {});
+    return !this.disabled 
+      && !this._hide 
+      && (this.formControlValue.length > +this.autofilterMinLength || +this.autofilterMinLength === 0);
   }
   
-  ngOnChanges({ disabled }: SimpleChanges): void {
+  ngOnChanges({
+    autofilter, 
+    disabled
+  }: SimpleChanges): void {
+    if(autofilter) {
+      this._dataValueKey = autofilter.currentValue
+        .reduce((acc: any, { key, value }: TKeyValue) => ({
+          ...acc, 
+          [value]: key
+        }), {});
+    }
+
     if(disabled) {
       this.formControl[!disabled.currentValue ? 'enable' : 'disable']();
     }
@@ -55,10 +67,7 @@ export class SharedInputComponent implements ControlValueAccessor, OnChanges, On
   ngOnInit(): void {
     this._formControlValueChangesSubscription = this.formControl.valueChanges
       .subscribe((value: string) => {
-        const data: Record<string, unknown> = this._data;
-        
-        this.hide = false;
-        this._onChange(data[value]);
+        this._onChange(value);
         this._onTouched();
       });
   }
@@ -80,14 +89,14 @@ export class SharedInputComponent implements ControlValueAccessor, OnChanges, On
   }
 
   onFocusEventHandler(): void {
-    this.hide = false;
+    this._hide = false;
   }
 
   onBlurEventHandler(): void {
-    this.hide = true;
+    this._hide = true;
   }
 
-  onClickEventHandler({ key, value }: TKeyValue): void {
+  onClickEventHandler(value: string): void {
     this.formControl.setValue(value);
     this.onBlurEventHandler();
   }

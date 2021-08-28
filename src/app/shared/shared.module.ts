@@ -10,7 +10,8 @@ import {
   SHARED_TOKEN_VALUE_STORAGE,
   SHARED_TOKEN_VALUE_INTERCEPTOR,
   SHARED_PROVIDER_FOR_ROOT,
-  SHARED_PROVIDER_FOR_FEATURE
+  SHARED_PROVIDER_FOR_FEATURE,
+  SHARED_TOKEN_VALUE_API
 } from './shared.token';
 import { TSharedModuleConfiguration } from './shared.type';
 
@@ -89,9 +90,10 @@ export class SharedModule {
   }
 
   static forRoot({
+    api, 
     interceptor, 
     storage
-  }: Pick<TSharedModuleConfiguration, 'interceptor' | 'storage'>): ModuleWithProviders<SharedModule> {
+  }: Pick<TSharedModuleConfiguration, 'api' | 'interceptor' | 'storage'>): ModuleWithProviders<SharedModule> {
     return {
       ngModule: SharedModule, 
       providers: [
@@ -101,6 +103,9 @@ export class SharedModule {
         }, 
 
         {
+          provide:  SHARED_TOKEN_VALUE_API, 
+          useValue: api
+        }, {
           provide:  SHARED_TOKEN_VALUE_INTERCEPTOR, 
           useValue: interceptor
         }, {

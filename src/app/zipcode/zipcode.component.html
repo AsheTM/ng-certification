@@ -61,7 +61,7 @@
         <app-zipcode-card *ngFor="let weather of weathers$ | async" 
             [condition]="weather.condition" 
             [location]="weather.location" 
-            [name]="weather.name" 
+            [name]="(autofilterData$ | async | filter:weather.location:'key')[0]?.value + ', ' + weather.name" 
             [temperature]="weather.temperature" 
             [weather]="weather.weather" 
             [zipcode]="weather.zipcode" 

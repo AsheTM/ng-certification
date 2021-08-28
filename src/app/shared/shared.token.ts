@@ -6,6 +6,7 @@ namespace Token {
     export const FOR_ROOT:      InjectionToken<ESharedProvider> = new InjectionToken<ESharedProvider>('SHARED_PROVIDER_FOR_ROOT');
     export const FOR_FEATURE:   InjectionToken<ESharedProvider> = new InjectionToken<ESharedProvider>('SHARED_PROVIDER_FOR_FEATURE');
 
+    export const API:           InjectionToken<string>  = new InjectionToken<string>('SHARED_TOKEN_VALUE_API');
     export const HTTP:          InjectionToken<string>  = new InjectionToken<string>('SHARED_TOKEN_VALUE_HTTP');
     export const FALLBACK:      InjectionToken<string>  = new InjectionToken<string>('SHARED_TOKEN_VALUE_FALLBACK');
     export const INTERCEPTOR:   InjectionToken<string>  = new InjectionToken<string>('SHARED_TOKEN_VALUE_INTERCEPTOR');
@@ -16,6 +17,7 @@ namespace Token {
 export const SHARED_PROVIDER_FOR_ROOT:      InjectionToken<ESharedProvider> = Token.FOR_ROOT;
 export const SHARED_PROVIDER_FOR_FEATURE:   InjectionToken<ESharedProvider> = Token.FOR_FEATURE;
 
+export const SHARED_TOKEN_VALUE_API:            InjectionToken<string>  = Token.API;
 export const SHARED_TOKEN_VALUE_HTTP:           InjectionToken<string>  = Token.HTTP;
 export const SHARED_TOKEN_VALUE_FALLBACK:       InjectionToken<string>  = Token.FALLBACK;
 export const SHARED_TOKEN_VALUE_INTERCEPTOR:    InjectionToken<string>  = Token.INTERCEPTOR;

@@ -7,7 +7,7 @@ import { TForecast, TForecasts, TMapForecast, TZipForecast } from './forecast.ty
 
 import { APP_ROUTE_FEATURE_ZIPCODE } from '../app.route';
 
-import { getWeatherIcon, HttpService, TTemperature } from '../shared';
+import { getWeatherIcon, DataService, TTemperature } from '../shared';
 
 
 @Injectable()
@@ -72,7 +72,7 @@ export class ForecastService {
 
   constructor(
     private _activatedRoute: ActivatedRoute, 
-    private _httpService: HttpService, 
+    private _httpService: DataService, 
     private _router: Router
   ) { }
 

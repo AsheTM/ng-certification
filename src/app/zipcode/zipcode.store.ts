@@ -15,8 +15,36 @@ export namespace Selector {
   export const SLICE_STATE      = 'zipcode';
   const getFeatureSliceStore    = createFeatureSelector<State.Type>(SLICE_STATE);
 
-  export const getLoadingState  = createSelector(getFeatureSliceStore, ({ loadingState }: State.Type):  EZipcodeState => loadingState);
-  export const getWeathers      = createSelector(getFeatureSliceStore, ({ weathers }: State.Type):      TWeather[]    => weathers);
+  export const isDoneLoadingState 
+    = createSelector(
+      getFeatureSliceStore, 
+      ({ loadingState }: State.Type):  boolean  => loadingState === EZipcodeState.DONE
+    );
+  export const isWorkingLoadingState 
+    = createSelector(
+      getFeatureSliceStore, 
+      ({ loadingState }: State.Type):  boolean  => loadingState === EZipcodeState.WORKING
+    );
+  export const getTextLoadingState 
+    = createSelector(
+      getFeatureSliceStore, 
+      ({ loadingState }: State.Type):  string   => {
+        switch(loadingState) {
+          case EZipcodeState.DEFAULT: 
+            return 'Add location';
+          case EZipcodeState.WORKING: 
+            return 'Adding...';
+          case EZipcodeState.DONE: 
+            return 'Done';
+          default: 
+            return 'unknown text';
+        }
+      });
+  export const getWeathers 
+    = createSelector(
+      getFeatureSliceStore, 
+      ({ weathers }: State.Type):      TWeather[] => weathers
+    );
 }
 
 
@@ -34,7 +62,7 @@ export namespace State {
 
 
 export namespace Action {
-  export const getData        = createAction('[Zipcode] (Effect) Get Zipcodes', 
+  export const getData        = createAction('[Zipcode] (Effect) Get Zipcodes & Locations', 
     props<Record<'data', [string, string][]>>());
   export const weathersLoaded = createAction('[Zipcode] Init Weathers Data Done', 
     props<Record<'weathers', TWeather[]>>());
