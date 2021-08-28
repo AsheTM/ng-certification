@@ -22,7 +22,9 @@
   },
   "scripts": {
     "ng": "ng",
-    "start": "ng serve -o --port 4204",
+    "start": "ng serve -o",
+    "start:dev": "npm run start -- --port 4204 --proxy-config proxy-config.json",
+    "start:prod": "npm run start -- --port 4205 --prod",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
