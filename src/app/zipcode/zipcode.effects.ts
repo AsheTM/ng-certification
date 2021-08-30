@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { TypedAction } from '@ngrx/store/src/models';
-import { EMPTY, from, Observable } from 'rxjs';
+import { EMPTY, from, Observable, of, OperatorFunction, pipe } from 'rxjs';
 import {
   catchError, 
   concatMap, 
@@ -26,6 +26,7 @@ import {
   LocalStorageService, 
   THttpError
 } from '../shared';
+import { UnaryOperator } from '@angular/compiler';
 
 
 @Injectable()
@@ -35,7 +36,7 @@ export class ZipcodeEffects {
     = createEffect(() => this._actions$.pipe(
       ofType(Action.getData), 
       pluck('data'), 
-      switchMap((items: [string, string][]) => this._getWeathers(items)), 
+      this._getWeatherFromLocalStorageItemOperator(), 
       map((weathers: TWeather[]) => Action.weathersLoaded({ weathers }))
     ));
 
@@ -45,8 +46,7 @@ export class ZipcodeEffects {
       tap(({ location, zipcode }: Record<'location' | 'zipcode', string>) => 
         this._localStorageService.setItem({ [zipcode]: location })), 
       switchMapTo(this._localStorageService.itemsSubject$), 
-      map(Object.entries), 
-      switchMap((items: [string, string][]) => this._getWeathers(items)), 
+      this._getWeatherFromLocalStorageItemOperator(), 
       mergeMap((weathers: TWeather[]) => from([
         Action.weathersLoaded({ weathers }), 
         Action.doneState()
@@ -65,6 +65,13 @@ export class ZipcodeEffects {
     private _httpService:         DataService, 
     private _localStorageService: LocalStorageService
   ) { }
+
+  private _getWeatherFromLocalStorageItemOperator(): OperatorFunction<Record<string, string>, TWeather[]> {
+    return (source: Observable<Record<string, string>>): Observable<TWeather[]> => source.pipe(
+      map(Object.entries), 
+      switchMap((items: [string, string][]) => this._getWeathers(items)), 
+    );
+  }
 
   private _getWeathers(items: [string, string][]): Observable<TWeather[]> {
     return from(items).pipe(

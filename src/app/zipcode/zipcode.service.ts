@@ -8,7 +8,7 @@ import { ZIPCODE_CONSTANT_RESOLVER_COUNTRIES } from './zipcode.constant';
 import { Action, RootState, Selector } from './zipcode.store';
 import { TWeather } from './zipcode.type';
 
-import { IntervalService, LocalStorageService, TKeyValue } from '../shared';
+import { ELoadingState, IntervalService, LocalStorageService, TKeyValue } from '../shared';
 
 
 @Injectable()
@@ -25,8 +25,8 @@ export class ZipcodeService implements OnDestroy {
     = this._store.select(Selector.isDoneLoadingState);
   isLoadingStateZipcodeSubject$:          Observable<boolean> 
     = this._store.select(Selector.isWorkingLoadingState);
-  textButtonZipcodes$:                    Observable<string> 
-    = this._store.select(Selector.getTextLoadingState);
+  loadingStateZipcodes$:                  Observable<ELoadingState> 
+    = this._store.select(Selector.isLoadingState);
   weathersZipcode$:                       Observable<TWeather[]> 
     = this._store.select(Selector.getWeathers);
   
@@ -34,8 +34,7 @@ export class ZipcodeService implements OnDestroy {
     = this._intervalService.interval$
       .pipe(
         switchMapTo(this._localStorageService.itemsSubject$), 
-        map(Object.entries), 
-        map((data: [string, string][]) => void this._store.dispatch(Action.getData({ data })))
+        map((data: Record<string, string>) => void this._store.dispatch(Action.getData({ data })))
       );
   private _autoRefreshWeathersZipcodeSubscription:  Subscription | undefined;
 

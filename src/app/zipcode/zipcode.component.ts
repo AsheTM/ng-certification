@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { ZipcodeService } from './zipcode.service';
 import { TWeather } from './zipcode.type';
 
-import { SharedInputComponent, TKeyValue } from '../shared';
+import { ELoadingState, SharedInputComponent, TKeyValue } from '../shared';
 
 
 @Component({
@@ -23,7 +23,7 @@ export class ZipcodeComponent implements OnInit {
   isDoneState$:       Observable<boolean>                 = this._zipcodeService.isDoneStateZipcodeSubject$;
   isLoadingState$:    Observable<boolean>                 = this._zipcodeService.isLoadingStateZipcodeSubject$;
   localStorageData$:  Observable<Record<string, string>>  = this._zipcodeService.localStorageDataZipcode$;
-  textButton$:        Observable<string>                  = this._zipcodeService.textButtonZipcodes$;
+  loadingState$:      Observable<ELoadingState>           = this._zipcodeService.loadingStateZipcodes$;
   weathers$:          Observable<TWeather[]>              = this._zipcodeService.weathersZipcode$;
 
   constructor(private _zipcodeService: ZipcodeService) { }

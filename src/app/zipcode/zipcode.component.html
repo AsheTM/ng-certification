@@ -4,7 +4,8 @@
 <div class="container-fluid">
     <div class="well" *ngIf="{
         isDone:     isDoneState$ | async, 
-        isLoading:  isLoadingState$ | async
+        isLoading:  isLoadingState$ | async, 
+        state:      loadingState$ | async
     }; let state">
         <h2>Enter a zipcode:</h2>
         <input id="addLocation"
@@ -40,21 +41,35 @@
             }
         </style>
         <app-shared-button id="addLocationBtn" 
-            [disabled]="!Location.value || !Zipcode.value" 
-            [done]="state.isDone" 
-            [icon]="state.isDone ? '/assets/done-icon.png' : null"
-            [loading]="state.isLoading" 
             shared-button-done="shared-button-done-custom"
             shared-button-loading="shared-button-loading-custom"
-            (click)="onClickEventHandler(Zipcode.value, Location.value)">{{ textButton$ | async }}</app-shared-button> -->
+            [disabled]="!Location.value || !Zipcode.value" 
+            [state]="loadingState$ | async"
+            (click)="onClickEventHandler(Zipcode.value, Location.value)">
+            <img *ngIf="state.isDone" 
+                alt="Icon" 
+                icon 
+                src="/assets/done-icon.png" />
+            <span>{{ textButton$ | async }}</span>
+        </app-shared-button> -->
         
         <!-- TODO: Comment that html tag -->
         <app-shared-button id="addLocationBtn" 
             [disabled]="!Location.value || !Zipcode.value" 
-            [done]="state.isDone" 
-            [icon]="state.isDone ? '/assets/done-icon.png' : null"
-            [loading]="state.isLoading" 
-            (click)="onClickEventHandler(Zipcode.value, Location.value)">{{ textButton$ | async }}</app-shared-button>
+            [state]="state.state"
+            (click)="onClickEventHandler(Zipcode.value, Location.value)">
+            <ng-container>
+                <span>Add location</span>
+            </ng-container>
+            <ng-container done>
+                <img alt="Icon" 
+                    src="/assets/done-icon.png" />
+                <span>Done</span>
+            </ng-container>
+            <ng-container loading>
+                <span>Adding...</span>
+            </ng-container>
+        </app-shared-button>
     </div>
 
     <div>

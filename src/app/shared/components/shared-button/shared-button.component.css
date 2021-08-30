@@ -1,4 +1,8 @@
 
+:host(.disabled){
+  pointer-events: none;
+}
+
 :host(.shared-button-done, .shared-button-loading){
   border-color: transparent;
 }

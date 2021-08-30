@@ -1,9 +1,10 @@
 import { createAction, createFeatureSelector, createReducer, createSelector, on, props } from '@ngrx/store';
 
-import { EZipcodeState } from './zipcode.enum';
 import { TWeather } from './zipcode.type';
 
 import { AppState } from '../app.store';
+
+import { ELoadingState } from '../shared';
 
 
 export type RootState = AppState.Type & {
@@ -15,47 +16,37 @@ export namespace Selector {
   export const SLICE_STATE      = 'zipcode';
   const getFeatureSliceStore    = createFeatureSelector<State.Type>(SLICE_STATE);
 
+  export const isLoadingState 
+    = createSelector(
+      getFeatureSliceStore, 
+      ({ loadingState }: State.Type):  ELoadingState  => loadingState
+    );
   export const isDoneLoadingState 
     = createSelector(
       getFeatureSliceStore, 
-      ({ loadingState }: State.Type):  boolean  => loadingState === EZipcodeState.DONE
+      ({ loadingState }: State.Type):  boolean        => loadingState === ELoadingState.DONE
     );
   export const isWorkingLoadingState 
     = createSelector(
       getFeatureSliceStore, 
-      ({ loadingState }: State.Type):  boolean  => loadingState === EZipcodeState.WORKING
+      ({ loadingState }: State.Type):  boolean        => loadingState === ELoadingState.WORKING
     );
-  export const getTextLoadingState 
-    = createSelector(
-      getFeatureSliceStore, 
-      ({ loadingState }: State.Type):  string   => {
-        switch(loadingState) {
-          case EZipcodeState.DEFAULT: 
-            return 'Add location';
-          case EZipcodeState.WORKING: 
-            return 'Adding...';
-          case EZipcodeState.DONE: 
-            return 'Done';
-          default: 
-            return 'unknown text';
-        }
-      });
   export const getWeathers 
     = createSelector(
       getFeatureSliceStore, 
-      ({ weathers }: State.Type):      TWeather[] => weathers
+      ({ weathers }: State.Type):      TWeather[]     => weathers
     );
 }
 
 
 export namespace State {
   export const INITIAL: Type = {
-    loadingState: EZipcodeState.DEFAULT, 
+    loadingState: ELoadingState.DEFAULT, 
     weathers:     []
   };
 
   export type Type = {
-    loadingState: EZipcodeState, 
+    loadingState: ELoadingState, 
     weathers:     TWeather[]
   };
 }
@@ -63,7 +54,7 @@ export namespace State {
 
 export namespace Action {
   export const getData        = createAction('[Zipcode] (Effect) Get Zipcodes & Locations', 
-    props<Record<'data', [string, string][]>>());
+    props<Record<'data', Record<string, string>>>());
   export const weathersLoaded = createAction('[Zipcode] Init Weathers Data Done', 
     props<Record<'weathers', TWeather[]>>());
 
@@ -83,12 +74,12 @@ export namespace Reducer {
 
     on(Action.loadedState,
       (state: State.Type) =>
-        ({ ...state, loadingState: EZipcodeState.DEFAULT })),
+        ({ ...state, loadingState: ELoadingState.DEFAULT })),
     on(Action.loadingState,
       (state: State.Type) =>
-        ({ ...state, loadingState: EZipcodeState.WORKING })),
+        ({ ...state, loadingState: ELoadingState.WORKING })),
     on(Action.doneState,
       (state: State.Type) =>
-        ({ ...state, loadingState: EZipcodeState.DONE }))
+        ({ ...state, loadingState: ELoadingState.DONE }))
   );
 }
