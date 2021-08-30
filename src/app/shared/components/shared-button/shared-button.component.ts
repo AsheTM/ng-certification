@@ -6,7 +6,8 @@ import {
   ViewEncapsulation, 
   ElementRef, 
   OnChanges, 
-  SimpleChanges
+  SimpleChanges,
+  TemplateRef
 } from '@angular/core';
 
 import { ELoadingState } from '../../enums';
@@ -14,6 +15,8 @@ import { ELoadingState } from '../../enums';
 
 @Component({
   selector:         'app-shared-button',
+  // ? Uncomment for second approach
+  // selector:         'app-shared-button[template-default][template-done][template-loading]',
   template:         `
     <ng-content *ngIf="isDefault"></ng-content>
     <ng-content *ngIf="isDone" 
@@ -21,6 +24,12 @@ import { ELoadingState } from '../../enums';
     <ng-content *ngIf="isLoading" 
       select="[working], [loading]"></ng-content>
   `, 
+  // ? Uncomment for second approach
+  // template:         `
+  // <ng-container *ngTemplateOutlet="isDefault ? templateDefault : null"></ng-container>
+  // <ng-container *ngTemplateOutlet="isDone ? templateDone : null"></ng-container>
+  // <ng-container *ngTemplateOutlet="isLoading ? templateLoading : null"></ng-container>
+  // `, 
   styleUrls:        ['./shared-button.component.css'], 
   encapsulation:    ViewEncapsulation.Emulated, 
   changeDetection:  ChangeDetectionStrategy.OnPush
@@ -35,9 +44,12 @@ export class SharedButtonComponent implements OnChanges {
   
   @HostBinding('class.disabled')  @Input()  disabled: boolean = false;
 
-  @Input('shared-button-done')    doneClassName:    string        = this.defaultDoneClassName;
-  @Input('shared-button-loading') loadingClassName: string        = this.defaultLoadingClassName;
-  @Input()                        state:            ELoadingState = ELoadingState.DEFAULT;
+  @Input('template-default')      templateDefault:  TemplateRef<unknown>;
+  @Input('template-done')         templateDone:     TemplateRef<unknown>;
+  @Input('template-loading')      templateLoading:  TemplateRef<unknown>;
+  @Input('shared-button-done')    doneClassName:    string                = this.defaultDoneClassName;
+  @Input('shared-button-loading') loadingClassName: string                = this.defaultLoadingClassName;
+  @Input()                        state:            ELoadingState         = ELoadingState.DEFAULT;
 
   get defaultDoneClassName(): string {
     return 'shared-button-done';

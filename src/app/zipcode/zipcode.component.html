@@ -54,6 +54,7 @@
         </app-shared-button> -->
         
         <!-- TODO: Comment that html tag -->
+        <!-- ? First approach -->
         <app-shared-button id="addLocationBtn" 
             [disabled]="!Location.value || !Zipcode.value" 
             [state]="state.state"
@@ -70,6 +71,23 @@
                 <span>Adding...</span>
             </ng-container>
         </app-shared-button>
+        
+        <!-- ? Comment for second approach -->
+        <!-- <app-shared-button id="addLocationBtn" 
+            [disabled]="!Location.value || !Zipcode.value" 
+            [state]="state.state"
+            [template-default]="SharedButtonDefaultState"
+            [template-done]="SharedButtonDoneState"
+            [template-loading]="SharedButtonLoadingState"
+            (click)="onClickEventHandler(Zipcode.value, Location.value)"></app-shared-button> -->
+        
+        <ng-template #SharedButtonDefaultState>Add location</ng-template>
+        <ng-template #SharedButtonDoneState>
+            <img alt="Icon" 
+                src="/assets/done-icon.png" />
+            <span>Done</span>
+        </ng-template>
+        <ng-template #SharedButtonLoadingState>Adding...</ng-template>
     </div>
 
     <div>
